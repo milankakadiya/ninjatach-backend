@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
@@ -26,7 +28,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Optional: Custom error messages for clarity
+     * Custom error messages for validation rules.
      */
     public function messages(): array
     {
@@ -36,5 +38,18 @@ class LoginRequest extends FormRequest
             'password.required' => 'Password is required.',
             'password.min' => 'Password must be at least 6 characters long.',
         ];
+    }
+
+    /**
+     * Always return JSON response when validation fails.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        $response = response()->json([
+            'message' => 'Validation error.',
+            'errors'  => $validator->errors(),
+        ], 422);
+
+        throw new ValidationException($validator, $response);
     }
 }

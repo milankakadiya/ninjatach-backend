@@ -6,17 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     */
     public function rules(): array
     {
         return [
@@ -27,9 +21,6 @@ class RegisterRequest extends FormRequest
         ];
     }
 
-    /**
-     * Optional: custom error messages.
-     */
     public function messages(): array
     {
         return [
@@ -42,5 +33,18 @@ class RegisterRequest extends FormRequest
             'password.min'        => 'Password must be at least 6 characters.',
             'password.confirmed'  => 'Password confirmation does not match.',
         ];
+    }
+
+    /**
+     * Always return JSON response for validation errors.
+     */
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        $response = response()->json([
+            'message' => 'Validation error.',
+            'errors'  => $validator->errors(),
+        ], 422);
+
+        throw new \Illuminate\Validation\ValidationException($validator, $response);
     }
 }

@@ -30,6 +30,12 @@ class AuthController extends Controller {
             throw ValidationException::withMessages(['email' => ['Invalid credentials']]);
         }
 
+        if ($user->role_id === 2) {
+            throw ValidationException::withMessages([
+                'email' => ['You are not authorized to log in to the admin portal.'],
+            ]);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json(['token' => $token, 'user' => $user]);
     }

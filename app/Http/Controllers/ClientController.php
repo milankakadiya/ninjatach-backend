@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller {
+
+    use AuthorizesRequests, ValidatesRequests;
+
     public function index(Request $request) {
         $perPage = $request->get('per_page', 10);
 
